@@ -5,66 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Golden Hour Bites</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #fafafa;
-      color: #333;
-    }
-    header {
-      background: #111;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-    }
-    .post {
-      background: white;
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .post h2 {
-      margin-top: 0;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      color: #777;
-    }
-    .rating {
-      color: #e67e22;
-      font-weight: bold;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; background: #fafafa; color: #333; }
+    header { background: #111; color: white; padding: 20px; text-align: center; }
+    .container { max-width: 900px; margin: auto; padding: 20px; }
+    .controls { margin-bottom: 20px; display: flex; gap: 10px; }
+    input, select { padding: 8px; border-radius: 6px; border: 1px solid #ccc; }
+    .post { background: white; padding: 15px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .post img { width: 100%; border-radius: 10px; margin-bottom: 10px; }
+    .rating { color: #e67e22; font-weight: bold; }
+    .category { font-size: 12px; color: #888; }
+    footer { text-align: center; padding: 20px; font-size: 14px; color: #777; }
   </style>
 </head>
 <body>
   <header>
     <h1>🌇 Golden Hour Bites</h1>
-    <p>restaurant reviews + go to spots </p>
+    <p>Restaurant reviews, vibes, and must-try spots</p>
   </header>
 
   <div class="container">
 
-    <div class="post">
-      <h2>thai villa </h2>
-      <p><strong>Location:</strong> NYC </p>
-      <p class="rating">Rating: ★★★★★</p>
-      <p>
-        food was amazing 
-      </p>
+    <!-- SEARCH + FILTER -->
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search restaurants..." onkeyup="filterPosts()">
+      <select id="categoryFilter" onchange="filterPosts()">
+        <option value="all">All</option>
+        <option value="Brunch">Brunch</option>
+        <option value="Dinner">Dinner</option>
+        <option value="Dessert">Dessert</option>
+        <option value="Cafe">Cafe</option>
+      </select>
     </div>
+
+    <!-- POSTS CONTAINER -->
+    <div id="posts"></div>
 
   </div>
 
   <footer>
     <p>© 2026 Golden Hour Bites</p>
   </footer>
+
+  <script>
+    const reviews = [
+      {
+        name: "Sample Restaurant",
+        location: "City, State",
+        rating: "★★★★☆",
+        category: "Dinner",
+        image: "https://via.placeholder.com/800x400",
+        text: "Amazing food, great vibes. Definitely recommend!"
+      }
+    ];
+
+    function renderPosts() {
+      const container = document.getElementById("posts");
+      container.innerHTML = "";
+
+      reviews.forEach(r => {
+        container.innerHTML += `
+          <div class="post" data-name="${r.name}" data-category="${r.category}">
+            <img src="${r.image}" alt="${r.name}">
+            <h2>${r.name}</h2>
+            <p class="category">${r.category}</p>
+            <p><strong>Location:</strong> ${r.location}</p>
+            <p class="rating">Rating: ${r.rating}</p>
+            <p>${r.text}</p>
+          </div>
+        `;
+      });
+    }
+
+    function filterPosts() {
+      const search = document.getElementById("search").value.toLowerCase();
+      const category = document.getElementById("categoryFilter").value;
+      const posts = document.querySelectorAll(".post");
+
+      posts.forEach(post => {
+        const name = post.getAttribute("data-name").toLowerCase();
+        const cat = post.getAttribute("data-category");
+
+        const matchSearch = name.includes(search);
+        const matchCategory = category === "all" || cat === category;
+
+        post.style.display = (matchSearch && matchCategory) ? "block" : "none";
+      });
+    }
+
+    renderPosts();
+  </script>
+
 </body>
 </html>
